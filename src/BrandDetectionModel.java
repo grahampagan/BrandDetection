@@ -8,6 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class BrandDetectionModel {
+	
+	Histogram imageHist;
 
 	public void displayImageSelected(JLabel imageUploaded, String path) throws IOException {
 		JLabel label = imageUploaded; 
@@ -17,7 +19,6 @@ public class BrandDetectionModel {
 		int width = bimg.getWidth();
 		int height = bimg.getHeight();
 		double ratio = (double)width/height;
-		System.out.println(width + " " + height);
 		
 		ImageIcon MyImage = new ImageIcon(p);		
         Image img = MyImage.getImage();
@@ -31,6 +32,15 @@ public class BrandDetectionModel {
         }
         ImageIcon image = new ImageIcon(newImg);
         label.setIcon(image);		
+	}
+
+	public void createImageHistogram(String path) throws IOException {
+		imageHist = new Histogram(path);		
+	}
+
+	public void detectBrand() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

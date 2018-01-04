@@ -126,12 +126,25 @@ public class BrandDetectionApp extends JFrame {
 		          if(result == JFileChooser.APPROVE_OPTION){
 		              File selectedFile = file.getSelectedFile();
 		              String path = selectedFile.getAbsolutePath();
+		              
+		              // DISPLAY THE IMAGE SELECTED
 		              try {
 						model.displayImageSelected(imageUploaded, path);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+		              
+		              // CREATE A HISTOGRAM FOR THE IMAGE SELECTED
+		              try {
+						model.createImageHistogram(path);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		              
+		              // DETECT THE BRAND
+		              model.detectBrand();
 		          }
 		        }
 
