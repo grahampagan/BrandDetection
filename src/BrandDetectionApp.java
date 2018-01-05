@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -137,14 +138,22 @@ public class BrandDetectionApp extends JFrame {
 		              
 		              // CREATE A HISTOGRAM FOR THE IMAGE SELECTED
 		              try {
-						model.createImageHistogram(path);
+						model.createImageHistogram(selectedFile);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 		              
 		              // DETECT THE BRAND
-		              model.detectBrand();
+		              try {
+						model.detectBrand();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 		          }
 		        }
 

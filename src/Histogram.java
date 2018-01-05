@@ -8,15 +8,15 @@ import javax.imageio.ImageIO;
 public class Histogram {
 
 	int[][] bins = new int[3][256];
-	String path;
+	File file;
 	BufferedImage bimg;
 	int imgHeight;
 	int imgWidth;
 	Raster raster;
 	
-	public Histogram(String p) throws IOException {
-		path = p;
-		bimg = ImageIO.read(new File(path));
+	public Histogram(File f) throws IOException {
+		file = f;
+		bimg = ImageIO.read(file);
 		imgHeight = bimg.getHeight();
         imgWidth = bimg.getWidth();
         raster = bimg.getRaster();
@@ -26,10 +26,8 @@ public class Histogram {
                 bins[0][raster.getSample(i, j, 0)]++;
                 bins[1][raster.getSample(i, j, 1)]++;
                 bins[2][raster.getSample(i, j, 2)]++;
-
             }
         }
-  
 	}
 
 	public int[] getRedBin(){

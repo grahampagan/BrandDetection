@@ -1,7 +1,11 @@
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -34,13 +38,37 @@ public class BrandDetectionModel {
         label.setIcon(image);		
 	}
 
-	public void createImageHistogram(String path) throws IOException {
-		imageHist = new Histogram(path);		
+	public void createImageHistogram(File f) throws IOException {
+		imageHist = new Histogram(f);		
 	}
 
-	public void detectBrand() {
-		// TODO Auto-generated method stub
+	public void detectBrand() throws IOException {
+		File currentDir = new File(System.getProperty("user.dir") + "/brands");
+		File[] listOfFiles = currentDir.listFiles();
+		Map<String, Integer> simValues = new HashMap<String, Integer>();
+		String maxBrand;
+		int maxSim = 0;
 		
+		for (File f : listOfFiles) {
+			Histogram brandHist = new Histogram(f);	
+			int similarity = calculateSimilarity(brandHist);
+			simValues.put(f.getName(), similarity);
+		}
+		
+		for (Map.Entry<String, Integer> entry : simValues.entrySet()) {
+		    String brand = entry.getKey();
+		    int value = entry.getValue();
+		    if (value > maxSim){
+		    	maxBrand = brand;
+		    	maxSim = value;
+		    }
+		}
+		
+	}
+
+	private int calculateSimilarity(Histogram brandHist) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
