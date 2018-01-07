@@ -65,12 +65,12 @@ public class BrandDetectionApp extends JFrame {
 		setBounds(100, 100, 710, 455);
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{80, 250, 50, 250, 0};
-		gridBagLayout.rowHeights = new int[]{30, 250, 14, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] { 80, 250, 50, 250, 0 };
+		gridBagLayout.rowHeights = new int[] { 30, 250, 14, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
-		
+
 		JLabel imageUploaded = new JLabel("");
 		imageUploaded.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_imageUploaded = new GridBagConstraints();
@@ -79,7 +79,7 @@ public class BrandDetectionApp extends JFrame {
 		gbc_imageUploaded.gridx = 1;
 		gbc_imageUploaded.gridy = 1;
 		getContentPane().add(imageUploaded, gbc_imageUploaded);
-		
+
 		JLabel imageDetected = new JLabel("");
 		imageDetected.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_imageDetected = new GridBagConstraints();
@@ -88,7 +88,7 @@ public class BrandDetectionApp extends JFrame {
 		gbc_imageDetected.gridx = 3;
 		gbc_imageDetected.gridy = 1;
 		getContentPane().add(imageDetected, gbc_imageDetected);
-		
+
 		JLabel lblYourImage = new JLabel("Your Image");
 		lblYourImage.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_lblYourImage = new GridBagConstraints();
@@ -97,7 +97,7 @@ public class BrandDetectionApp extends JFrame {
 		gbc_lblYourImage.gridx = 1;
 		gbc_lblYourImage.gridy = 2;
 		getContentPane().add(lblYourImage, gbc_lblYourImage);
-		
+
 		JLabel lblBrandDetected = new JLabel("Brand Detected");
 		lblBrandDetected.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints gbc_lblBrandDetected = new GridBagConstraints();
@@ -105,47 +105,46 @@ public class BrandDetectionApp extends JFrame {
 		gbc_lblBrandDetected.gridx = 3;
 		gbc_lblBrandDetected.gridy = 2;
 		getContentPane().add(lblBrandDetected, gbc_lblBrandDetected);
-		
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
+
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
-		
+
 		JMenuItem mntmNewImage = new JMenuItem("New Image");
 		mntmNewImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser file = new JFileChooser();
-		          file.setCurrentDirectory(new File(System.getProperty("user.home")));
-		          
-		          FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg","gif","png");
-		          file.addChoosableFileFilter(filter);
-		          
-		          int result = file.showOpenDialog(null);
+				file.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-		          if(result == JFileChooser.APPROVE_OPTION){
-		              File selectedFile = file.getSelectedFile();
-		              String path = selectedFile.getAbsolutePath();
-		              
-		              // DISPLAY THE IMAGE SELECTED
-		              try {
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "gif", "png");
+				file.addChoosableFileFilter(filter);
+
+				int result = file.showOpenDialog(null);
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = file.getSelectedFile();
+					String path = selectedFile.getAbsolutePath();
+
+					// DISPLAY THE IMAGE SELECTED
+					try {
 						model.displayImageSelected(imageUploaded, path);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-		              
-		              // CREATE A HISTOGRAM FOR THE IMAGE SELECTED
-		              try {
+
+					// CREATE A HISTOGRAM FOR THE IMAGE SELECTED
+					try {
 						model.createImageHistogram(selectedFile);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-		              
-		              // DETECT THE BRAND
-		              try {
+
+					// DETECT THE BRAND
+					try {
 						model.detectBrand();
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -154,16 +153,12 @@ public class BrandDetectionApp extends JFrame {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-		          }
-		        }
+				}
+			}
 
-			
 		});
-		
+
 		mnFile.add(mntmNewImage);
 	}
-	
-	
-	
-	
+
 }
