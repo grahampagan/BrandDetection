@@ -153,6 +153,14 @@ public class BrandDetectionApp extends JFrame {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					// DISPLAY THE BRAND DETECTED
+					try {
+						model.displayBrandDetected(imageDetected);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 

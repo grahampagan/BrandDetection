@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 public class BrandDetectionModel {
 
 	Histogram imageHist;
+	String minBrand;
 
 	public void displayImageSelected(JLabel imageUploaded, String path) throws IOException {
 		JLabel label = imageUploaded;
@@ -46,7 +47,6 @@ public class BrandDetectionModel {
 		File currentDir = new File(System.getProperty("user.dir") + "/brands");
 		File[] listOfFiles = currentDir.listFiles();
 		Map<String, Double> simValues = new HashMap<String, Double>();
-		String minBrand = "";
 		double minSim = Double.MAX_VALUE;
 
 		for (File f : listOfFiles) {
@@ -64,18 +64,55 @@ public class BrandDetectionModel {
 				minSim = sim;
 			}
 		}
-		
+
 		System.out.println("BRAND IS: " + minBrand);
 	}
 
 	private double calculateSimilarity(Histogram brandHist) {
 		double sim = 0;
-		for(int i = 0; i < brandHist.getRedBucket().length; i++){
+		for (int i = 0; i < brandHist.getRedBucket().length; i++) {
 			sim += Math.abs(brandHist.getRedBucket()[i] - imageHist.getRedBucket()[i]);
 			sim += Math.abs(brandHist.getGreenBucket()[i] - imageHist.getGreenBucket()[i]);
 			sim += Math.abs(brandHist.getBlueBucket()[i] - imageHist.getBlueBucket()[i]);
 		}
 		return sim;
+	}
+
+	public void displayBrandDetected(JLabel imageDetected) throws IOException {
+		JLabel label = imageDetected;
+		File currentDir = new File(System.getProperty("user.dir") + "/brands");
+		File[] listOfFiles = currentDir.listFiles();
+		File brand = null;
+		Boolean found = false;
+
+		for (File f : listOfFiles) {
+			if (f.getName().equals(minBrand)) {
+				brand = f;
+				found = true;
+			}
+		}
+		
+		if (found) {
+			BufferedImage bimg = ImageIO.read(brand);
+			int width = bimg.getWidth();
+			int height = bimg.getHeight();
+			double ratio = (double) width / height;
+
+			ImageIcon MyImage = new ImageIcon(brand.getAbsolutePath());
+			Image img = MyImage.getImage();
+			Image newImg;
+			if (width > height) {
+				double newHeight = label.getHeight() / ratio;
+				newImg = img.getScaledInstance(label.getWidth(), (int) newHeight, Image.SCALE_SMOOTH);
+			} else {
+				double newWidth = label.getWidth() * ratio;
+				newImg = img.getScaledInstance((int) newWidth, label.getHeight(), Image.SCALE_SMOOTH);
+			}
+			ImageIcon image = new ImageIcon(newImg);
+			label.setIcon(image);
+		} else {
+			// BRAND NOT FOUND
+		}
 	}
 
 }
