@@ -8,9 +8,10 @@ import javax.imageio.ImageIO;
 public class Histogram {
 
 	int[][] bins = new int[3][256];
-	double[] redBucket = new double[4];
-	double[] greenBucket = new double[4];
-	double[] blueBucket = new double[4];
+	int numBuckets = 4;
+	double[] redBucket = new double[numBuckets];
+	double[] greenBucket = new double[numBuckets];
+	double[] blueBucket = new double[numBuckets];
 	File file;
 	BufferedImage bimg;
 	int imgHeight;
@@ -34,58 +35,33 @@ public class Histogram {
 				bins[2][raster.getSample(i, j, 2)]++;
 			}
 		}
-
+	
 		// FILL THE RED BUCKETS
-		for (int i = 0; i < 64; i++) {
-			redBucket[0] += bins[0][i];
-		}
-		for (int i = 64; i < 128; i++) {
-			redBucket[1] += bins[0][i];
-		}
-		for (int i = 128; i < 192; i++) {
-			redBucket[2] += bins[0][i];
-		}
-		for (int i = 192; i < 256; i++) {
-			redBucket[3] += bins[0][i];
-		}
-		for (int i = 0; i < redBucket.length; i++){
+		for(int i = 0; i < numBuckets; i++){
+			int j = bins[0].length/numBuckets;
+			for(int k = j*i; k < j*i+j; k++){
+				redBucket[i] += bins[0][k];
+			}
 			redBucket[i] = redBucket[i]/numPixels;
 		}
-
+		
 		// FILL THE GREEN BUCKETS
-		for (int i = 0; i < 64; i++) {
-			greenBucket[0] += bins[1][i];
-		}
-		for (int i = 64; i < 128; i++) {
-			greenBucket[1] += bins[1][i];
-		}
-		for (int i = 128; i < 192; i++) {
-			greenBucket[2] += bins[1][i];
-		}
-		for (int i = 192; i < 256; i++) {
-			greenBucket[3] += bins[1][i];
-		}
-		for (int i = 0; i < greenBucket.length; i++){
+		for(int i = 0; i < numBuckets; i++){
+			int j = bins[1].length/numBuckets;
+			for(int k = j*i; k < j*i+j; k++){
+				greenBucket[i] += bins[1][k];
+			}
 			greenBucket[i] = greenBucket[i]/numPixels;
 		}
-
-		// FILL THE BLUE BUCKETS
-		for (int i = 0; i < 64; i++) {
-			blueBucket[0] += bins[2][i];
-		}
-		for (int i = 64; i < 128; i++) {
-			blueBucket[1] += bins[2][i];
-		}
-		for (int i = 128; i < 192; i++) {
-			blueBucket[2] += bins[2][i];
-		}
-		for (int i = 192; i < 256; i++) {
-			blueBucket[3] += bins[2][i];
-		}
-		for (int i = 0; i < blueBucket.length; i++){
-			blueBucket[i] = blueBucket[i]/numPixels;
-		}
 		
+		// FILL THE BLUE BUCKETS
+		for(int i = 0; i < numBuckets; i++){
+			int j = bins[2].length/numBuckets;
+			for(int k = j*i; k < j*i+j; k++){
+				blueBucket[i] += bins[2][k];
+			}
+			blueBucket[i] = blueBucket[i]/numPixels;
+		}	
 	}
 
 	public int[] getRedBin() {
