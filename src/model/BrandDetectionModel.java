@@ -1,3 +1,4 @@
+package model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,17 +16,26 @@ public class BrandDetectionModel {
 
 	Histogram imageHist;
 	String minBrand;
+	Boolean cropped = false;
 
 	public void displayImageSelected(JLabel imageUploaded, String path) throws IOException {
 		JLabel label = imageUploaded;
 		String p = path;
-
-		BufferedImage bimg = ImageIO.read(new File(p));
+		BufferedImage bimg;
+		ImageIcon MyImage;
+		
+		if(cropped){
+			File f = new File("cropimg.jpg");
+			bimg = ImageIO.read(f);
+			MyImage = new ImageIcon(f.getAbsolutePath());
+		} else {
+			bimg = ImageIO.read(new File(p));
+			MyImage = new ImageIcon(p);
+		}
 		int width = bimg.getWidth();
 		int height = bimg.getHeight();
 		double ratio = (double) width / height;
 
-		ImageIcon MyImage = new ImageIcon(p);
 		Image img = MyImage.getImage();
 		Image newImg;
 		if (width > height) {
@@ -40,7 +50,11 @@ public class BrandDetectionModel {
 	}
 
 	public void createImageHistogram(File f) throws IOException {
-		imageHist = new Histogram(f);
+		if(cropped){
+			imageHist = new Histogram(new File("cropimg.jpg"));
+		} else {
+			imageHist = new Histogram(f);
+		}
 	}
 
 	public void detectBrand() throws IOException {
@@ -113,6 +127,10 @@ public class BrandDetectionModel {
 		} else {
 			// BRAND NOT FOUND
 		}
+	}
+
+	public void setCropped(boolean b) {
+		cropped = b;		
 	}
 
 }

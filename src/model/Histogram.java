@@ -1,3 +1,4 @@
+package model;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;

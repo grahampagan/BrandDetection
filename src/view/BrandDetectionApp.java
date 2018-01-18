@@ -1,3 +1,4 @@
+package view;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -24,6 +25,9 @@ import net.miginfocom.swing.MigLayout;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import model.BrandDetectionModel;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -126,7 +130,10 @@ public class BrandDetectionApp extends JFrame {
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = file.getSelectedFile();
 					String path = selectedFile.getAbsolutePath();
-
+					
+					// CROP THE IMAGE
+					CropPrompt cp = new CropPrompt(selectedFile, model);
+					
 					// DISPLAY THE IMAGE SELECTED
 					try {
 						model.displayImageSelected(imageUploaded, path);
