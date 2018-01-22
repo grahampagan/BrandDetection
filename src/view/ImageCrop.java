@@ -46,12 +46,19 @@ import java.awt.FlowLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpringLayout;
 import net.miginfocom.swing.MigLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Component;
+import javax.swing.Box;
 
 public class ImageCrop extends JDialog {
 
 	private JPanel contentPane;
 	File selectedFile;
 	int c1, c2, c3, c4;
+	BufferedImage bimg;
+	int width, height;
 	BrandDetectionModel model;
 
 	/**
@@ -61,7 +68,7 @@ public class ImageCrop extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/fantabottle.jpg"), null);
+					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/free-the-rage.png"), null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -78,6 +85,9 @@ public class ImageCrop extends JDialog {
 	public ImageCrop(File f, BrandDetectionModel m) throws IOException {
 		selectedFile = f;
 		model = m;
+		bimg = ImageIO.read(selectedFile);
+		width = bimg.getWidth();
+		height = bimg.getHeight();
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
@@ -85,25 +95,26 @@ public class ImageCrop extends JDialog {
 				model.setCropped(false);
 			}
 		};
-		this.addWindowListener(exitListener);
+		// this.addWindowListener(exitListener);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 546, 472);
 		contentPane = new JPanel();
+		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
-		JLabel imageLabel = new JLabel(""){
+		JLabel imageLabel = new JLabel("") {
 			public void paint(Graphics g) {
 				super.paint(g);
 				int x = Math.min(c1, c3);
 				int y = Math.min(c2, c4);
 				int w = Math.abs(c1 - c3);
 				int h = Math.abs(c2 - c4);
-				
+
 				g.drawRect(x, y, w, h);
 			}
 		};
-		
+
 		imageLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -117,6 +128,19 @@ public class ImageCrop extends JDialog {
 				repaint();
 				c3 = arg0.getX();
 				c4 = arg0.getY();
+
+				if (c3 > width) {
+					c3 = width - 1;
+				}
+				if (c3 < 0) {
+					c3 = 0;
+				}
+				if (c4 > height) {
+					c4 = height - 1;
+				}
+				if (c4 < 0) {
+					c4 = 0;
+				}
 			}
 		});
 
@@ -126,6 +150,27 @@ public class ImageCrop extends JDialog {
 				repaint();
 				c3 = arg0.getX();
 				c4 = arg0.getY();
+
+				if (c3 > width) {
+					c3 = width - 1;
+				}
+				if (c3 < 0) {
+					c3 = 0;
+				}
+				if (c4 > height) {
+					c4 = height - 1;
+				}
+				if (c4 < 0) {
+					c4 = 0;
+				}
+			}
+		});
+
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.setCropped(false);
+				setVisible(false);
 			}
 		});
 
@@ -143,57 +188,42 @@ public class ImageCrop extends JDialog {
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}	
-		        
+				}
+
 				model.setCropped(true);
 				setVisible(false);
 			}
 		});
-						
-								JButton cancelButton = new JButton("Cancel");
-								cancelButton.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										model.setCropped(false);
-										setVisible(false);
-									}
-								});
-								displayImageSelected(imageLabel, cropButton, cancelButton);
-								GroupLayout gl_contentPane = new GroupLayout(contentPane);
-								gl_contentPane.setHorizontalGroup(
-									gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_contentPane.createSequentialGroup()
-											.addGap(7)
-											.addComponent(imageLabel)
-											.addGap(74)
-											.addComponent(cropButton, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE))
-										.addGroup(gl_contentPane.createSequentialGroup()
-											.addGap(81)
-											.addComponent(cancelButton))
-								);
-								gl_contentPane.setVerticalGroup(
-									gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_contentPane.createSequentialGroup()
-											.addGap(7)
-											.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-												.addGroup(gl_contentPane.createSequentialGroup()
-													.addGap(12)
-													.addComponent(imageLabel))
-												.addComponent(cropButton))
-											.addGap(4)
-											.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-											.addContainerGap(366, Short.MAX_VALUE))
-								);
-								contentPane.setLayout(gl_contentPane);
+		displayImageSelected(imageLabel);
+		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addComponent(imageLabel)
+						.addPreferredGap(ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(cropButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE))
+						.addGap(378)));
+		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup().addGap(10).addComponent(cropButton).addGap(10)
+						.addComponent(cancelButton).addContainerGap(362, Short.MAX_VALUE))
+				.addGroup(gl_contentPane.createSequentialGroup().addGap(10).addComponent(imageLabel)
+						.addContainerGap(408, Short.MAX_VALUE)));
+		contentPane.setLayout(gl_contentPane);
 		setVisible(true);
 	}
 
-	private void displayImageSelected(JLabel l, JButton cropButton, JButton cancelButton) throws IOException {
+	private void displayImageSelected(JLabel l) throws IOException {
 		JLabel label = l;
-		BufferedImage bimg = ImageIO.read(selectedFile);
-		int width = bimg.getWidth();
-		int height = bimg.getHeight();
 		ImageIcon MyImage = new ImageIcon(selectedFile.getAbsolutePath());
 		label.setIcon(MyImage);
+		this.setSize(width + 130, height + 75);
 
+		c1 = 0;
+		c2 = 0;
+		c3 = width - 1;
+		c4 = height - 1;
+		repaint();
 	}
 }
