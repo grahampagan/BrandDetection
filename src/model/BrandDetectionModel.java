@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 public class BrandDetectionModel {
 
 	Histogram imageHist;
+	TextureHistogram imageTexHist;
 	String minBrand;
 	Boolean cropped = false;
 
@@ -65,7 +66,8 @@ public class BrandDetectionModel {
 
 		for (File f : listOfFiles) {
 			Histogram brandHist = new Histogram(f);
-			double similarity = calculateSimilarity(brandHist);
+			TextureHistogram brandTexHist = new TextureHistogram(f);
+			double similarity = calculateSimilarity(brandHist, brandTexHist);
 			System.out.println(f.getName() + " Sim: " + similarity);
 			simValues.put(f.getName(), similarity);
 		}
@@ -82,12 +84,15 @@ public class BrandDetectionModel {
 		System.out.println("BRAND IS: " + minBrand);
 	}
 
-	private double calculateSimilarity(Histogram brandHist) {
+	private double calculateSimilarity(Histogram brandHist, TextureHistogram brandTexHist) {
 		double sim = 0;
 		for (int i = 0; i < brandHist.getRedBucket().length; i++) {
 			sim += Math.abs(brandHist.getRedBucket()[i] - imageHist.getRedBucket()[i]);
 			sim += Math.abs(brandHist.getGreenBucket()[i] - imageHist.getGreenBucket()[i]);
 			sim += Math.abs(brandHist.getBlueBucket()[i] - imageHist.getBlueBucket()[i]);
+		}
+		for (int i = 0; i < brandTexHist.getOBucket().length; i++){
+			sim += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
 		}
 		return sim;
 	}
@@ -131,6 +136,14 @@ public class BrandDetectionModel {
 
 	public void setCropped(boolean b) {
 		cropped = b;		
+	}
+
+	public void createImageTextureHistogram(File selectedFile) throws IOException {
+		if(cropped){
+			imageTexHist = new TextureHistogram(new File("cropimg.jpg"));
+		} else {
+			imageTexHist = new TextureHistogram(selectedFile);
+		}
 	}
 
 }

@@ -149,6 +149,14 @@ public class BrandDetectionApp extends JFrame {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
+					// CREATE A TEXTURE HISTOGRAM FOR THE IMAGE SELECTED
+					try {
+						model.createImageTextureHistogram(selectedFile);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
 					// DETECT THE BRAND
 					try {

@@ -68,7 +68,7 @@ public class ImageCrop extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/free-the-rage.png"), null);
+					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/images.jpg"), null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -99,7 +99,7 @@ public class ImageCrop extends JDialog {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 546, 472);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setBackground(new Color(40,40,43));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
