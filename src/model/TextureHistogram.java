@@ -20,7 +20,6 @@ public class TextureHistogram {
 
 	public TextureHistogram(File selectedFile) throws IOException {
 		f = selectedFile;
-		System.out.println(f.getName());
 		bimg = ImageIO.read(f);
 		width = bimg.getWidth();
 		height = bimg.getHeight();
