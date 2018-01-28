@@ -26,7 +26,7 @@ public class BrandDetectionModel {
 		ImageIcon MyImage;
 		
 		if(cropped){
-			File f = new File("cropimg.jpg");
+			File f = new File("cropimg.png");
 			bimg = ImageIO.read(f);
 			MyImage = new ImageIcon(f.getAbsolutePath());
 		} else {
@@ -52,7 +52,7 @@ public class BrandDetectionModel {
 
 	public void createImageHistogram(File f) throws IOException {
 		if(cropped){
-			imageHist = new Histogram(new File("cropimg.jpg"));
+			imageHist = new Histogram(new File("cropimg.png"));
 		} else {
 			imageHist = new Histogram(f);
 		}
@@ -140,7 +140,7 @@ public class BrandDetectionModel {
 
 	public void createImageTextureHistogram(File selectedFile) throws IOException {
 		if(cropped){
-			imageTexHist = new TextureHistogram(new File("cropimg.jpg"));
+			imageTexHist = new TextureHistogram(new File("cropimg.png"));
 		} else {
 			imageTexHist = new TextureHistogram(selectedFile);
 		}

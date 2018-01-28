@@ -184,7 +184,9 @@ public class ImageCrop extends JDialog {
 				BufferedImage img = null;
 				try {
 					img = ImageIO.read(f);
-					ImageIO.write(img.getSubimage(x, y, w, h), "jpg", new File("cropimg.jpg"));
+					BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+					newImage.getGraphics().drawImage(img, 0, 0, null);
+					ImageIO.write(newImage.getSubimage(x, y, w, h), "png", new File("cropimg.png"));
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
