@@ -68,7 +68,7 @@ public class ImageCrop extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/images.jpg"), null);
+					ImageCrop frame = new ImageCrop(new File("C:/Users/Graham/Pictures/fantabottle.jpg"), null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -95,7 +95,7 @@ public class ImageCrop extends JDialog {
 				model.setCropped(false);
 			}
 		};
-		// this.addWindowListener(exitListener);
+//		this.addWindowListener(exitListener);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 546, 472);
 		contentPane = new JPanel();
@@ -110,8 +110,20 @@ public class ImageCrop extends JDialog {
 				int y = Math.min(c2, c4);
 				int w = Math.abs(c1 - c3);
 				int h = Math.abs(c2 - c4);
-
+				
 				g.drawRect(x, y, w, h);
+				
+				g.drawRect(x, y, w/3, h);
+				g.drawRect(x, y, w*2/3, h);
+				
+				g.drawRect(x, y, w, h/3);
+				g.drawRect(x, y, w, h*2/3);
+				
+				g.setColor(new Color(0, 121, 203));
+				g.fillRect(x-5, y-5, 10, 10);
+				g.fillRect(x-5, y+h-5, 10, 10);
+				g.fillRect(x+w-5, y-5, 10, 10);
+				g.fillRect(x+w-5, y+h-5, 10, 10);				
 			}
 		};
 

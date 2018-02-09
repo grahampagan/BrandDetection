@@ -1,4 +1,5 @@
 package model;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 public class BrandDetectionModel {
 
 	Histogram imageHist;
+	Histogram imageHistBright;
 	TextureHistogram imageTexHist;
 	String minBrand;
 	Boolean cropped = false;
@@ -24,8 +26,8 @@ public class BrandDetectionModel {
 		String p = path;
 		BufferedImage bimg;
 		ImageIcon MyImage;
-		
-		if(cropped){
+
+		if (cropped) {
 			File f = new File("cropimg.png");
 			bimg = ImageIO.read(f);
 			MyImage = new ImageIcon(f.getAbsolutePath());
@@ -51,10 +53,12 @@ public class BrandDetectionModel {
 	}
 
 	public void createImageHistogram(File f) throws IOException {
-		if(cropped){
-			imageHist = new Histogram(new File("cropimg.png"));
+		if (cropped) {
+			imageHist = new Histogram(new File("cropimg.png"), false);
+			imageHistBright = new Histogram(new File("cropimg.png"), true);
 		} else {
-			imageHist = new Histogram(f);
+			imageHist = new Histogram(f, false);
+			imageHistBright = new Histogram(f, true);
 		}
 	}
 
@@ -65,7 +69,7 @@ public class BrandDetectionModel {
 		double minSim = Double.MAX_VALUE;
 
 		for (File f : listOfFiles) {
-			Histogram brandHist = new Histogram(f);
+			Histogram brandHist = new Histogram(f, false);
 			TextureHistogram brandTexHist = new TextureHistogram(f);
 			double similarity = calculateSimilarity(brandHist, brandTexHist);
 			System.out.println(f.getName() + " Sim: " + similarity);
@@ -85,15 +89,27 @@ public class BrandDetectionModel {
 	}
 
 	private double calculateSimilarity(Histogram brandHist, TextureHistogram brandTexHist) {
-		double sim = 0;
+		double sim, simRGB, simBright, simTex;
+		sim = simRGB = simBright = simTex = 0;
 		for (int i = 0; i < brandHist.getRedBucket().length; i++) {
-			sim += Math.abs(brandHist.getRedBucket()[i] - imageHist.getRedBucket()[i]);
-			sim += Math.abs(brandHist.getGreenBucket()[i] - imageHist.getGreenBucket()[i]);
-			sim += Math.abs(brandHist.getBlueBucket()[i] - imageHist.getBlueBucket()[i]);
+			simRGB += Math.abs(brandHist.getRedBucket()[i] - imageHist.getRedBucket()[i]);
+			simRGB += Math.abs(brandHist.getGreenBucket()[i] - imageHist.getGreenBucket()[i]);
+			simRGB += Math.abs(brandHist.getBlueBucket()[i] - imageHist.getBlueBucket()[i]);
 		}
-		for (int i = 0; i < brandTexHist.getOBucket().length; i++){
-			sim += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
+		for (int i = 0; i < brandHist.getRedBucket().length; i++) {
+			simBright += Math.abs(brandHist.getRedBucket()[i] - imageHistBright.getRedBucket()[i]);
+			simBright += Math.abs(brandHist.getGreenBucket()[i] - imageHistBright.getGreenBucket()[i]);
+			simBright += Math.abs(brandHist.getBlueBucket()[i] - imageHistBright.getBlueBucket()[i]);
 		}
+		System.out.println(simRGB + " " + simBright);
+//		 simRGB = Math.min(simRGB, simBright);
+		// simRGB = (simRGB+simBright)/2;
+//		simRGB = Math.max(simRGB, simBright);
+		simRGB = simBright;
+		for (int i = 0; i < brandTexHist.getOBucket().length; i++) {
+			simTex += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
+		}
+		sim = simRGB + simTex * 3;
 		return sim;
 	}
 
@@ -110,7 +126,7 @@ public class BrandDetectionModel {
 				found = true;
 			}
 		}
-		
+
 		if (found) {
 			BufferedImage bimg = ImageIO.read(brand);
 			int width = bimg.getWidth();
@@ -135,11 +151,11 @@ public class BrandDetectionModel {
 	}
 
 	public void setCropped(boolean b) {
-		cropped = b;		
+		cropped = b;
 	}
 
 	public void createImageTextureHistogram(File selectedFile) throws IOException {
-		if(cropped){
+		if (cropped) {
 			imageTexHist = new TextureHistogram(new File("cropimg.png"));
 		} else {
 			imageTexHist = new TextureHistogram(selectedFile);

@@ -15,7 +15,7 @@ public class TextureHistogram {
 	int numPixels;
 	int numEdges;
 	int[] orientationBin = new int[181];
-	int numBuckets = 6;
+	int numBuckets = 4;
 	double[] oBucket = new double[numBuckets];
 
 	public TextureHistogram(File selectedFile) throws IOException {
@@ -27,6 +27,8 @@ public class TextureHistogram {
 		CannyEdgeDetector detector = new CannyEdgeDetector();
 		detector.setSourceImage(bimg);
 		detector.process();
+		BufferedImage edges = detector.getEdgesImage();
+		ImageIO.write(edges, "png", new File("test/"+f.getName()+".png"));
 		double[] o = detector.getOrientation();
 
 		// FILL THE ORIENTATION BIN
