@@ -101,7 +101,6 @@ public class BrandDetectionModel {
 			simBright += Math.abs(brandHist.getGreenBucket()[i] - imageHistBright.getGreenBucket()[i]);
 			simBright += Math.abs(brandHist.getBlueBucket()[i] - imageHistBright.getBlueBucket()[i]);
 		}
-		System.out.println(simRGB + " " + simBright);
 //		 simRGB = Math.min(simRGB, simBright);
 		// simRGB = (simRGB+simBright)/2;
 //		simRGB = Math.max(simRGB, simBright);
@@ -109,7 +108,8 @@ public class BrandDetectionModel {
 		for (int i = 0; i < brandTexHist.getOBucket().length; i++) {
 			simTex += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
 		}
-		sim = simRGB + simTex * 3;
+		System.out.println(simRGB + " " + simBright + " " + simTex);
+		sim = simRGB + simTex * 30;
 		return sim;
 	}
 

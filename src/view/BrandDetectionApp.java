@@ -1,9 +1,11 @@
 package view;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -14,10 +16,15 @@ import javax.swing.JMenu;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
+
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 
@@ -41,9 +48,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JInternalFrame;
+import javax.swing.JButton;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
+import java.awt.Font;
 
 public class BrandDetectionApp extends JFrame {
 
+	private JPanel contentPane;
+	private static Point compCoords;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -64,59 +81,117 @@ public class BrandDetectionApp extends JFrame {
 	 * Create the frame.
 	 */
 	public BrandDetectionApp() {
+		setResizable(false);
+		setUndecorated(true);
+		setTitle("Brand Detection");
 		BrandDetectionModel model = new BrandDetectionModel();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 710, 455);
-
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 80, 250, 50, 250, 0 };
-		gridBagLayout.rowHeights = new int[] { 30, 250, 14, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		getContentPane().setLayout(gridBagLayout);
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(40,40,43));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		contentPane.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(0, 121, 203)));
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setBackground(new Color(0, 121, 203));
+		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+				setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
+			}
+		});
+		compCoords = null;
+		topPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				compCoords = null;
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				compCoords = e.getPoint();
+			}
+		});
+		topPanel.setBounds(0, 0, 710, 24);
+		contentPane.add(topPanel);
+		topPanel.setLayout(null);
+		
+		JButton closeButton = new JButton("X");
+		closeButton.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		closeButton.setFocusable(false);
+		closeButton.setForeground(Color.WHITE);
+		closeButton.setBackground(new Color(0, 121, 203));
+		closeButton.setBorder(null);
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		closeButton.setBounds(659, 0, 51, 23);
+		closeButton.setAlignmentY(0.0f);
+		topPanel.add(closeButton);
+		
+		JButton minButton = new JButton("_");
+		minButton.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
+		minButton.setFocusable(false);
+		minButton.setForeground(Color.WHITE);
+		minButton.setBackground(new Color(0, 121, 203));
+		minButton.setBorder(null);
+		minButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setState(JFrame.ICONIFIED);
+			}
+		});
+		minButton.setAlignmentY(0.0f);
+		minButton.setBounds(607, 0, 51, 23);
+		topPanel.add(minButton);
 
 		JLabel imageUploaded = new JLabel("");
+		imageUploaded.setBorder(BorderFactory.createMatteBorder(1, 1, 3, 3, new Color(0, 121, 203)));
+		imageUploaded.setBounds(69, 80, 250, 250);
 		imageUploaded.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_imageUploaded = new GridBagConstraints();
-		gbc_imageUploaded.fill = GridBagConstraints.BOTH;
-		gbc_imageUploaded.insets = new Insets(0, 0, 5, 5);
-		gbc_imageUploaded.gridx = 1;
-		gbc_imageUploaded.gridy = 1;
-		getContentPane().add(imageUploaded, gbc_imageUploaded);
+		getContentPane().add(imageUploaded);
 
 		JLabel imageDetected = new JLabel("");
+		imageDetected.setBorder(BorderFactory.createMatteBorder(1, 1, 3, 3, new Color(0, 121, 203)));
+		imageDetected.setBounds(369, 80, 250, 250);
 		imageDetected.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_imageDetected = new GridBagConstraints();
-		gbc_imageDetected.fill = GridBagConstraints.BOTH;
-		gbc_imageDetected.insets = new Insets(0, 0, 5, 0);
-		gbc_imageDetected.gridx = 3;
-		gbc_imageDetected.gridy = 1;
-		getContentPane().add(imageDetected, gbc_imageDetected);
+		getContentPane().add(imageDetected);
 
 		JLabel lblYourImage = new JLabel("Your Image");
+		lblYourImage.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
+		lblYourImage.setForeground(Color.WHITE);
+		lblYourImage.setBounds(140, 341, 89, 24);
 		lblYourImage.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_lblYourImage = new GridBagConstraints();
-		gbc_lblYourImage.anchor = GridBagConstraints.NORTH;
-		gbc_lblYourImage.insets = new Insets(0, 0, 0, 5);
-		gbc_lblYourImage.gridx = 1;
-		gbc_lblYourImage.gridy = 2;
-		getContentPane().add(lblYourImage, gbc_lblYourImage);
+		getContentPane().add(lblYourImage);
 
 		JLabel lblBrandDetected = new JLabel("Brand Detected");
+		lblBrandDetected.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
+		lblBrandDetected.setForeground(Color.WHITE);
+		lblBrandDetected.setBounds(446, 341, 117, 24);
 		lblBrandDetected.setHorizontalAlignment(SwingConstants.CENTER);
-		GridBagConstraints gbc_lblBrandDetected = new GridBagConstraints();
-		gbc_lblBrandDetected.anchor = GridBagConstraints.NORTH;
-		gbc_lblBrandDetected.gridx = 3;
-		gbc_lblBrandDetected.gridy = 2;
-		getContentPane().add(lblBrandDetected, gbc_lblBrandDetected);
+		getContentPane().add(lblBrandDetected);
 
 		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-
-		JMenu mnFile = new JMenu("File");
+		menuBar.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
+		menuBar.setBounds(0, 24, 710, 19);
+		contentPane.add(menuBar);
+		menuBar.setBackground(new Color(40,40,43));
+		menuBar.setBorder(null);
+		JMenu mnFile = new JMenu("FILE");
+		mnFile.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		mnFile.setSelectedIcon(null);
+		mnFile.setForeground(Color.WHITE);
 		menuBar.add(mnFile);
+		menuBar.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0, 121, 203)));
 
-		JMenuItem mntmNewImage = new JMenuItem("New Image");
+		JMenuItem mntmNewImage = new JMenuItem("NEW IMAGE");
+		mntmNewImage.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		mntmNewImage.setSelectedIcon(null);
+		mntmNewImage.setForeground(Color.WHITE);
+		mntmNewImage.setBackground(new Color(27,27,28));
 		mntmNewImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser file = new JFileChooser();
@@ -183,5 +258,4 @@ public class BrandDetectionApp extends JFrame {
 
 		mnFile.add(mntmNewImage);
 	}
-
 }
