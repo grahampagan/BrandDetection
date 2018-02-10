@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.MouseAdapter;
@@ -50,7 +51,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Component;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import java.awt.Font;
+import javax.swing.border.LineBorder;
 
 public class ImageCrop extends JDialog {
 
@@ -60,6 +65,7 @@ public class ImageCrop extends JDialog {
 	BufferedImage bimg;
 	int width, height;
 	BrandDetectionModel model;
+	private static Point compCoords;
 
 	/**
 	 * Launch the application.
@@ -83,6 +89,7 @@ public class ImageCrop extends JDialog {
 	 * @throws IOException
 	 */
 	public ImageCrop(File f, BrandDetectionModel m) throws IOException {
+		setUndecorated(true);
 		selectedFile = f;
 		model = m;
 		bimg = ImageIO.read(selectedFile);
@@ -95,13 +102,14 @@ public class ImageCrop extends JDialog {
 				model.setCropped(false);
 			}
 		};
-//		this.addWindowListener(exitListener);
+		this.addWindowListener(exitListener);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 546, 472);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(40,40,43));
+		contentPane.setBackground(new Color(40, 40, 43));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		contentPane.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(0, 121, 203)));
 
 		JLabel imageLabel = new JLabel("") {
 			public void paint(Graphics g) {
@@ -110,22 +118,24 @@ public class ImageCrop extends JDialog {
 				int y = Math.min(c2, c4);
 				int w = Math.abs(c1 - c3);
 				int h = Math.abs(c2 - c4);
-				
+
 				g.drawRect(x, y, w, h);
-				
-				g.drawRect(x, y, w/3, h);
-				g.drawRect(x, y, w*2/3, h);
-				
-				g.drawRect(x, y, w, h/3);
-				g.drawRect(x, y, w, h*2/3);
-				
+
+				g.drawRect(x, y, w / 3, h);
+				g.drawRect(x, y, w * 2 / 3, h);
+
+				g.drawRect(x, y, w, h / 3);
+				g.drawRect(x, y, w, h * 2 / 3);
+
 				g.setColor(new Color(0, 121, 203));
-				g.fillRect(x-5, y-5, 10, 10);
-				g.fillRect(x-5, y+h-5, 10, 10);
-				g.fillRect(x+w-5, y-5, 10, 10);
-				g.fillRect(x+w-5, y+h-5, 10, 10);				
+				g.fillRect(x - 5, y - 5, 10, 10);
+				g.fillRect(x - 5, y + h - 5, 10, 10);
+				g.fillRect(x + w - 5, y - 5, 10, 10);
+				g.fillRect(x + w - 5, y + h - 5, 10, 10);
 			}
 		};
+		imageLabel.setBounds(20, 40, 41, -48);
+		imageLabel.setBorder(BorderFactory.createMatteBorder(1, 1, 3, 3, new Color(0, 121, 203)));
 
 		imageLabel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -179,6 +189,12 @@ public class ImageCrop extends JDialog {
 		});
 
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setFocusable(false);
+		cancelButton.setBackground(new Color(27, 27, 28));
+		cancelButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		cancelButton.setForeground(Color.LIGHT_GRAY);
+		cancelButton.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		cancelButton.setBounds(309, 69, 80, 23);
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.setCropped(false);
@@ -187,6 +203,12 @@ public class ImageCrop extends JDialog {
 		});
 
 		JButton cropButton = new JButton("Crop");
+		cropButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		cropButton.setFocusable(false);
+		cropButton.setForeground(Color.LIGHT_GRAY);
+		cropButton.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		cropButton.setBackground(new Color(27, 27, 28));
+		cropButton.setBounds(309, 35, 80, 23);
 		cropButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int x = Math.min(c1, c3);
@@ -208,31 +230,76 @@ public class ImageCrop extends JDialog {
 				setVisible(false);
 			}
 		});
-		displayImageSelected(imageLabel);
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addComponent(imageLabel)
-						.addPreferredGap(ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(cropButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addComponent(cancelButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE))
-						.addGap(378)));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup().addGap(10).addComponent(cropButton).addGap(10)
-						.addComponent(cancelButton).addContainerGap(362, Short.MAX_VALUE))
-				.addGroup(gl_contentPane.createSequentialGroup().addGap(10).addComponent(imageLabel)
-						.addContainerGap(408, Short.MAX_VALUE)));
-		contentPane.setLayout(gl_contentPane);
+		;
+		contentPane.setLayout(null);
+
+		JPanel topPanel = new JPanel();
+		topPanel.setBounds(0, 0, 409, 24);
+		topPanel.setLayout(null);
+		topPanel.setBackground(new Color(0, 121, 203));
+		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+				setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
+			}
+		});
+		compCoords = null;
+		topPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				compCoords = null;
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				compCoords = e.getPoint();
+			}
+		});
+
+		JButton closeButton = new JButton("X");
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				model.setCropped(false);
+				setVisible(false);
+			}
+		});
+		closeButton.setForeground(Color.WHITE);
+		closeButton.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		closeButton.setFocusable(false);
+		closeButton.setBorder(null);
+		closeButton.setBackground(new Color(0, 121, 203));
+		closeButton.setAlignmentY(0.0f);
+		closeButton.setBounds(358, 0, 51, 23);
+		topPanel.add(closeButton);
+		contentPane.add(topPanel);
+		contentPane.add(imageLabel);
+		contentPane.add(cropButton);
+		contentPane.add(cancelButton);
+		displayImageSelected(imageLabel, topPanel, closeButton, cropButton, cancelButton);
+		
+		JLabel titleLabel = new JLabel("CONN08 Brand Detection - Image Crop");
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		titleLabel.setBounds(10, 2, 269, 19);
+		topPanel.add(titleLabel);
 		setVisible(true);
 	}
 
-	private void displayImageSelected(JLabel l) throws IOException {
+	private void displayImageSelected(JLabel l, JPanel topPanel, JButton closeButton, JButton cropButton,
+			JButton cancelButton) throws IOException {
 		JLabel label = l;
 		ImageIcon MyImage = new ImageIcon(selectedFile.getAbsolutePath());
 		label.setIcon(MyImage);
-		this.setSize(width + 130, height + 75);
+		label.setSize(new Dimension(width, height));
+		this.setSize(width + 125, height + 60);
+		topPanel.setSize(new Dimension(width + 125, topPanel.getHeight()));
+		closeButton.setBounds(width + 75, 0, (int) closeButton.getBounds().getWidth(),
+				(int) closeButton.getBounds().getHeight());
+		cropButton.setBounds(width + 32, (int) l.getBounds().getY(), (int) cropButton.getBounds().getWidth(),
+				(int) cropButton.getBounds().getHeight());
+		cancelButton.setBounds(width + 32, (int) l.getBounds().getY() + 32, (int) cropButton.getBounds().getWidth(),
+				(int) cropButton.getBounds().getHeight());
 
 		c1 = 0;
 		c2 = 0;

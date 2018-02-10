@@ -7,7 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -20,6 +25,7 @@ public class BrandDetectionModel {
 	TextureHistogram imageTexHist;
 	String minBrand;
 	Boolean cropped = false;
+	Queue<String> results;
 
 	public void displayImageSelected(JLabel imageUploaded, String path) throws IOException {
 		JLabel label = imageUploaded;
@@ -62,7 +68,7 @@ public class BrandDetectionModel {
 		}
 	}
 
-	public void detectBrand() throws IOException {
+	public void detectBrand(JLabel result) throws IOException {
 		File currentDir = new File(System.getProperty("user.dir") + "/brands");
 		File[] listOfFiles = currentDir.listFiles();
 		Map<String, Double> simValues = new HashMap<String, Double>();
@@ -84,8 +90,33 @@ public class BrandDetectionModel {
 				minSim = sim;
 			}
 		}
+		
+		// FILL THE QUEUE WITH BRANDS
+		Map.Entry<String, Double> minimumBrand = null;
+		results = new LinkedList<String>();
+		while(!simValues.isEmpty()){
+			double minimum = Double.MAX_VALUE;
+			for (Map.Entry<String, Double> entry : simValues.entrySet()) {
+				if(entry.getValue()<minimum){
+					minimum = entry.getValue();
+					minimumBrand = entry;
+				}
+			}
+			
+			results.add(minimumBrand.getKey());
 
+			for(Iterator<Map.Entry<String, Double>>it = simValues.entrySet().iterator();it.hasNext();){
+			     Map.Entry<String, Double> entry = it.next();
+			     if (entry.getKey().equals(minimumBrand.getKey())) {
+			          it.remove();
+			     }
+			 }
+		}
+		results.remove();
 		System.out.println("BRAND IS: " + minBrand);
+		String trimName = minBrand.substring(0, minBrand.lastIndexOf('.'));
+		trimName = trimName.substring(0, trimName.length()-1);
+		result.setText(trimName);
 	}
 
 	private double calculateSimilarity(Histogram brandHist, TextureHistogram brandTexHist) {
@@ -101,15 +132,15 @@ public class BrandDetectionModel {
 			simBright += Math.abs(brandHist.getGreenBucket()[i] - imageHistBright.getGreenBucket()[i]);
 			simBright += Math.abs(brandHist.getBlueBucket()[i] - imageHistBright.getBlueBucket()[i]);
 		}
-//		 simRGB = Math.min(simRGB, simBright);
+		// simRGB = Math.min(simRGB, simBright);
 		// simRGB = (simRGB+simBright)/2;
-//		simRGB = Math.max(simRGB, simBright);
+		// simRGB = Math.max(simRGB, simBright);
 		simRGB = simBright;
 		for (int i = 0; i < brandTexHist.getOBucket().length; i++) {
 			simTex += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
 		}
 		System.out.println(simRGB + " " + simBright + " " + simTex);
-		sim = simRGB + simTex * 30;
+		sim = simRGB + simTex * 5;
 		return sim;
 	}
 
@@ -160,6 +191,13 @@ public class BrandDetectionModel {
 		} else {
 			imageTexHist = new TextureHistogram(selectedFile);
 		}
+	}
+
+	public void getNextBest(JLabel result) {
+		minBrand = results.remove();
+		String trimName = minBrand.substring(0, minBrand.lastIndexOf('.'));
+		trimName = trimName.substring(0, trimName.length()-1);
+		result.setText(trimName);
 	}
 
 }

@@ -46,6 +46,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JInternalFrame;
@@ -55,6 +57,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import java.awt.Font;
+import java.awt.Cursor;
+import java.awt.Desktop;
 
 public class BrandDetectionApp extends JFrame {
 
@@ -147,32 +151,92 @@ public class BrandDetectionApp extends JFrame {
 		minButton.setAlignmentY(0.0f);
 		minButton.setBounds(607, 0, 51, 23);
 		topPanel.add(minButton);
+		
+		JLabel titleLabel = new JLabel("CONN08 Brand Detection");
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
+		titleLabel.setBounds(10, 2, 269, 19);
+		topPanel.add(titleLabel);
+		
+		JLabel resultLabel = new JLabel("Testing");
+		resultLabel.setVisible(false);
+		resultLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				String query = resultLabel.getText().replaceAll(" ", "%20");
+				String urlString = "https://www.google.co.uk/search?q="+query;
+				try {
+					Desktop.getDesktop().browse(new URL(urlString).toURI());
+				} catch (IOException | URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		JLabel statusLabel = new JLabel("Welcome to CONN08 Brand Detection! Press FILE > New Image to begin.");
+		statusLabel.setFont(new Font("Segoe UI Light", Font.ITALIC, 16));
+		statusLabel.setForeground(Color.WHITE);
+		statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		statusLabel.setBounds(68, 205, 550, 84);
+		contentPane.add(statusLabel);
+		resultLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		resultLabel.setForeground(new Color(0, 121, 203));
+		resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		resultLabel.setFont(new Font("Segoe UI Light", Font.PLAIN, 30));
+		resultLabel.setBounds(139, 359, 413, 44);
+		contentPane.add(resultLabel);
 
 		JLabel imageUploaded = new JLabel("");
+		imageUploaded.setVisible(false);
 		imageUploaded.setBorder(BorderFactory.createMatteBorder(1, 1, 3, 3, new Color(0, 121, 203)));
-		imageUploaded.setBounds(69, 80, 250, 250);
+		imageUploaded.setBounds(68, 70, 250, 250);
 		imageUploaded.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(imageUploaded);
 
 		JLabel imageDetected = new JLabel("");
+		imageDetected.setVisible(false);
 		imageDetected.setBorder(BorderFactory.createMatteBorder(1, 1, 3, 3, new Color(0, 121, 203)));
-		imageDetected.setBounds(369, 80, 250, 250);
+		imageDetected.setBounds(368, 70, 250, 250);
 		imageDetected.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(imageDetected);
 
 		JLabel lblYourImage = new JLabel("Your Image");
+		lblYourImage.setVisible(false);
 		lblYourImage.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
 		lblYourImage.setForeground(Color.WHITE);
-		lblYourImage.setBounds(140, 341, 89, 24);
+		lblYourImage.setBounds(139, 331, 89, 24);
 		lblYourImage.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(lblYourImage);
 
 		JLabel lblBrandDetected = new JLabel("Brand Detected");
+		lblBrandDetected.setVisible(false);
 		lblBrandDetected.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
 		lblBrandDetected.setForeground(Color.WHITE);
-		lblBrandDetected.setBounds(446, 341, 117, 24);
+		lblBrandDetected.setBounds(439, 331, 117, 24);
 		lblBrandDetected.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(lblBrandDetected);
+		
+		JLabel notBrandLabel = new JLabel("Not your brand?");
+		notBrandLabel.setVisible(false);
+		notBrandLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				model.getNextBest(resultLabel);
+				try {
+					model.displayBrandDetected(imageDetected);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		notBrandLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		notBrandLabel.setForeground(Color.GRAY);
+		notBrandLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		notBrandLabel.setFont(new Font("Segoe UI Light", Font.ITALIC, 13));
+		notBrandLabel.setBounds(295, 414, 99, 14);
+		contentPane.add(notBrandLabel);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setFont(new Font("Segoe UI Light", Font.PLAIN, 15));
@@ -181,13 +245,15 @@ public class BrandDetectionApp extends JFrame {
 		menuBar.setBackground(new Color(40,40,43));
 		menuBar.setBorder(null);
 		JMenu mnFile = new JMenu("FILE");
+		mnFile.setBorder(null);
 		mnFile.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
 		mnFile.setSelectedIcon(null);
 		mnFile.setForeground(Color.WHITE);
 		menuBar.add(mnFile);
 		menuBar.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0, 121, 203)));
 
-		JMenuItem mntmNewImage = new JMenuItem("NEW IMAGE");
+		JMenuItem mntmNewImage = new JMenuItem("New Image");
+		mntmNewImage.setBorder(null);
 		mntmNewImage.setFont(new Font("Segoe UI Light", Font.PLAIN, 13));
 		mntmNewImage.setSelectedIcon(null);
 		mntmNewImage.setForeground(Color.WHITE);
@@ -206,9 +272,18 @@ public class BrandDetectionApp extends JFrame {
 					File selectedFile = file.getSelectedFile();
 					String path = selectedFile.getAbsolutePath();
 					
+					statusLabel.setVisible(true);
+					imageUploaded.setVisible(false);
+					imageDetected.setVisible(false);
+					lblYourImage.setVisible(false);
+					lblBrandDetected.setVisible(false);
+					resultLabel.setVisible(false);
+					notBrandLabel.setVisible(false);
+					statusLabel.setText("Loading...");
+					
 					// CROP THE IMAGE
 					CropPrompt cp = new CropPrompt(selectedFile, model);
-					
+
 					// DISPLAY THE IMAGE SELECTED
 					try {
 						model.displayImageSelected(imageUploaded, path);
@@ -216,7 +291,7 @@ public class BrandDetectionApp extends JFrame {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
+					
 					// CREATE A HISTOGRAM FOR THE IMAGE SELECTED
 					try {
 						model.createImageHistogram(selectedFile);
@@ -232,10 +307,10 @@ public class BrandDetectionApp extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
+					
 					// DETECT THE BRAND
 					try {
-						model.detectBrand();
+						model.detectBrand(resultLabel);
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -247,6 +322,13 @@ public class BrandDetectionApp extends JFrame {
 					// DISPLAY THE BRAND DETECTED
 					try {
 						model.displayBrandDetected(imageDetected);
+						statusLabel.setVisible(false);
+						imageUploaded.setVisible(true);
+						imageDetected.setVisible(true);
+						lblYourImage.setVisible(true);
+						lblBrandDetected.setVisible(true);
+						resultLabel.setVisible(true);
+						notBrandLabel.setVisible(true);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
