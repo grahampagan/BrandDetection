@@ -17,6 +17,7 @@ import java.util.Queue;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 
 public class BrandDetectionModel {
 
@@ -68,20 +69,25 @@ public class BrandDetectionModel {
 		}
 	}
 
-	public void detectBrand(JLabel result) throws IOException {
+	public void detectBrand(JLabel result, JProgressBar progressBar) throws IOException {
 		File currentDir = new File(System.getProperty("user.dir") + "/brands");
 		File[] listOfFiles = currentDir.listFiles();
 		Map<String, Double> simValues = new HashMap<String, Double>();
 		double minSim = Double.MAX_VALUE;
 
-		for (File f : listOfFiles) {
+		for (int i = 0; i < listOfFiles.length; i++) {
+			progressBar.setValue(i*100/listOfFiles.length);
+			progressBar.update(progressBar.getGraphics());
+			File f = listOfFiles[i];
 			Histogram brandHist = new Histogram(f, false);
 			TextureHistogram brandTexHist = new TextureHistogram(f);
 			double similarity = calculateSimilarity(brandHist, brandTexHist);
 			System.out.println(f.getName() + " Sim: " + similarity);
 			simValues.put(f.getName(), similarity);
 		}
-
+		
+		progressBar.setVisible(false);
+		
 		for (Map.Entry<String, Double> entry : simValues.entrySet()) {
 			String brand = entry.getKey();
 			double sim = entry.getValue();

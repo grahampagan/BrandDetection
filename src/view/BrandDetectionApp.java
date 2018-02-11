@@ -59,6 +59,7 @@ import javax.swing.border.SoftBevelBorder;
 import java.awt.Font;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import javax.swing.JProgressBar;
 
 public class BrandDetectionApp extends JFrame {
 
@@ -118,6 +119,15 @@ public class BrandDetectionApp extends JFrame {
 				compCoords = e.getPoint();
 			}
 		});
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setVisible(false);
+		progressBar.setForeground(new Color(0, 121, 203));
+		progressBar.setBackground(new Color(27, 27, 28));
+		progressBar.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		progressBar.setValue(0);
+		progressBar.setBounds(270, 269, 146, 14);
+		contentPane.add(progressBar);
 		topPanel.setBounds(0, 0, 710, 24);
 		contentPane.add(topPanel);
 		topPanel.setLayout(null);
@@ -280,6 +290,7 @@ public class BrandDetectionApp extends JFrame {
 					resultLabel.setVisible(false);
 					notBrandLabel.setVisible(false);
 					statusLabel.setText("Loading...");
+					progressBar.setVisible(true);
 					
 					// CROP THE IMAGE
 					CropPrompt cp = new CropPrompt(selectedFile, model);
@@ -310,7 +321,7 @@ public class BrandDetectionApp extends JFrame {
 					
 					// DETECT THE BRAND
 					try {
-						model.detectBrand(resultLabel);
+						model.detectBrand(resultLabel, progressBar);
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
