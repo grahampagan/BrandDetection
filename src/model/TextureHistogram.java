@@ -28,28 +28,9 @@ public class TextureHistogram {
 		detector.setSourceImage(bimg);
 		detector.process();
 		BufferedImage edges = detector.getEdgesImage();
-		ImageIO.write(edges, "png", new File("test/" + f.getName() + ".png"));
+		// CODE TO CREATE THE EDGE IMAGE
+//		ImageIO.write(edges, "png", new File("test/" + f.getName() + ".png"));
 		double[] o = detector.getOrientation();
-
-		// // FILL THE ORIENTATION BIN
-		// for(double d : o){
-		// if(d != 0){
-		// numEdges++;
-		// if(d < 0){
-		// d = d*-1;
-		// }
-		// orientationBin[(int)d]++;
-		// }
-		// }
-
-		// FILL THE ORIENTATION BUCKETS
-		// for(int i = 0; i < numBuckets; i++){
-		// int j = orientationBin.length/numBuckets;
-		// for(int k = j*i; k <j*i+j; k++){
-		// oBucket[i] += orientationBin[k];
-		// }
-		// oBucket[numBuckets - 1] += orientationBin[180];
-		// }
 
 		for (double d : o) {
 			if (d != 0) {

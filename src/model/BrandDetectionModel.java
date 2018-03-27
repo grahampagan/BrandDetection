@@ -3,15 +3,11 @@ package model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 
 import javax.imageio.ImageIO;
@@ -138,9 +134,6 @@ public class BrandDetectionModel {
 			simBright += Math.abs(brandHist.getGreenBucket()[i] - imageHistBright.getGreenBucket()[i]);
 			simBright += Math.abs(brandHist.getBlueBucket()[i] - imageHistBright.getBlueBucket()[i]);
 		}
-		// simRGB = Math.min(simRGB, simBright);
-		// simRGB = (simRGB+simBright)/2;
-		// simRGB = Math.max(simRGB, simBright);
 		simRGB = simBright;
 		for (int i = 0; i < brandTexHist.getOBucket().length; i++) {
 			simTex += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);

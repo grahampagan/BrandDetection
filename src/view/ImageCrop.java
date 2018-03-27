@@ -1,17 +1,9 @@
 package view;
 
-import java.awt.AWTException;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -20,12 +12,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.awt.image.CropImageFilter;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.RenderedImage;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -40,20 +28,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.FlowLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SpringLayout;
-import net.miginfocom.swing.MigLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Component;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import java.awt.Font;
 import javax.swing.border.LineBorder;
 

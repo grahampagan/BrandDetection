@@ -1,14 +1,10 @@
 package model;
 
 import java.awt.Color;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
-
 import javax.imageio.ImageIO;
 
 public class Histogram {
@@ -63,7 +59,8 @@ public class Histogram {
 		        }
 		    }
 
-			ImageIO.write(bimg, "png", new File("test2/" + f.getName() + ".png"));
+		    // CODE TO CREATE THE BRIGHTER IMAGE
+//			ImageIO.write(bimg, "png", new File("test2/" + f.getName() + ".png"));
 			
 		        
 		}
