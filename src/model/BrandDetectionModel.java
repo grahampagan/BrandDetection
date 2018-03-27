@@ -139,7 +139,7 @@ public class BrandDetectionModel {
 			simTex += Math.abs(brandTexHist.getOBucket()[i] - imageTexHist.getOBucket()[i]);
 		}
 		System.out.println(simRGB + " " + simBright + " " + simTex);
-		sim = simRGB + simTex * 5;
+		sim = simRGB + simTex * 50;
 		return sim;
 	}
 
